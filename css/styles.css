@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Outfit:wght@400;600;700&display=swap');
+
+/* MODOS DE COLOR SUAVES (LIGHT / DARK) */
+body.dark-mode {
+  background: radial-gradient(ellipse at top, #0f172a, #0b0f19, #020617);
+  color: #e2e8f0;
+}
+body.light-mode {
+  background: radial-gradient(ellipse at top, #f8fafc, #e2e8f0, #cbd5e1);
+  color: #1e293b;
+}
+
+/* MODALES & CONTENEDORES EN MODO CLARO */
+body.light-mode .main-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: #cbd5e1;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+body.light-mode .sub-card {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+body.light-mode .sub-header {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
+body.light-mode .class-card {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+body.light-mode .class-card:hover {
+  background-color: #ffffff;
+}
+body.light-mode .modal-box {
+  background-color: #ffffff;
+  border-color: #f59e0b;
+  color: #0f172a;
+}
+body.light-mode .combat-panel {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+/* REGISTRO DE COMBATE EN MODO CLARO - AHORA IGUAL A LOS OTROS PANELES CON LETRAS OSCURAS LEGIBLES */
+body.light-mode .combat-log-box {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-mode .panel-title-text {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+/* ADAPTACIÓN MODO CLARO PARA LAS TARJETAS DE BATALLA SUPERIORES */
+body.light-mode .battle-arena {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-mode .player-card-box, 
+body.light-mode .enemy-card-box {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-mode .enemy-item-card {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-mode .enemy-item-card.selected-enemy {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+/* TIPOGRAFÍA DE ENEMIGOS EN MODO CLARO - CORREGIDO */
+body.light-mode .enemy-name-text {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.light-mode .enemy-hp-text {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+body.light-mode .text-stat-label {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+body.light-mode .text-stat-sub {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* ESTILOS DE BOTONES DE HABILIDADES DE ALTO CONTRASTE */
+body.light-mode .skill-btn-card {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+body.light-mode .skill-btn-card:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #d97706 !important;
+}
+body.light-mode .skill-btn-card .skill-desc {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+body.light-mode .skill-btn-card .skill-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode .skill-btn-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+body.dark-mode .skill-btn-card:hover {
+  background-color: #334155 !important;
+  border-color: #f59e0b !important;
+}
+body.dark-mode .skill-btn-card .skill-desc {
+  color: #cbd5e1 !important;
+  font-weight: 500 !important;
+}
+body.dark-mode .skill-btn-card .skill-title {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.font-cinzel { font-family: 'Cinzel', serif; }
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+
+@keyframes hit-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px) rotate(-2deg); }
+  40% { transform: translateX(8px) rotate(2deg); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+.animate-hit { animation: hit-shake 0.4s ease-in-out; }
+
+@keyframes level-up-glow {
+  0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+  70% { box-shadow: 0 0 30px 15px rgba(234, 179, 8, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+}
+.animate-level-up { animation: level-up-glow 1.5s ease-out; }
+
+/* ADAPTACIÓN A CELULAR Y TABLET */
+* { -webkit-tap-highlight-color: transparent; }
+button, .class-card, .skill-btn-card { touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; }
+@media (max-width: 480px) {
+  .combat-log-box { font-size: 11px; }
+}
