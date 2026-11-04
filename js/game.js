@@ -73,6 +73,8 @@ let gameState = {
         mp: base.maxMp,
         shield: 0,
         buffs: { atkBonus: 0, defBonus: 0, turns: 0 },
+        status: [],
+        stunImmune: false,
         level: 1,
         xp: 0,
         maxXp: 100
@@ -155,6 +157,7 @@ let gameState = {
           xp: Math.round(bossTemplate.xp * scale),
           icon: bossTemplate.icon,
           key: bossTemplate.name,
+          fx: makeFx(bossTemplate.name),
           color: bossTemplate.color,
           isBoss: true
         });
@@ -175,6 +178,7 @@ let gameState = {
             xp: Math.round(template.xp * scale),
             icon: template.icon,
             key: template.name,
+            fx: makeFx(template.name),
             color: template.color,
             isBoss: false
           });
@@ -248,6 +252,7 @@ let gameState = {
       if (p.buffs.turns > 0) {
         buffsContainer.innerHTML += `<span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded text-[10px] flex items-center gap-1"><i class="fa-solid fa-bolt"></i> Bendición (${p.buffs.turns} turnos)</span>`;
       }
+      renderPlayerStatus(buffsContainer);
     }
 
     function renderEnemies() {
@@ -290,6 +295,7 @@ let gameState = {
             <div class="flex items-center gap-2">
               <span class="${enemy.isBoss ? 'w-14 h-14' : 'w-11 h-11'} shrink-0 rounded-md overflow-hidden bg-slate-950/50 border border-slate-700 flex items-center justify-center text-xl ${isDead ? 'grayscale opacity-50' : ''}">${artHTML(enemy.key, enemy.icon, enemy.color)}</span>
               <span class="enemy-name-text text-xs font-black ${isDead ? 'line-through text-slate-400' : enemy.isBoss ? 'text-red-600 font-cinzel text-sm' : 'text-slate-100'}">${enemy.name}</span>
+              ${enemy.fx ? `<span class="text-[11px]" title="Puede infligir ${FX_INFO[enemy.fx.type].label}">${FX_INFO[enemy.fx.type].icon}</span>` : ''}
             </div>
             <span class="enemy-hp-text text-[10px] font-bold text-slate-300">${enemy.hp}/${enemy.maxHp} HP</span>
           </div>
@@ -376,6 +382,7 @@ let gameState = {
       p.mp -= skill.cost;
 
       let atkPower = p.atk + p.buffs.atkBonus + (skill.lvl - 1) * 6;
+      if ((p.status || []).some(s => s.type === 'weak')) atkPower = Math.round(atkPower * 0.75);
       let targets = [];
 
       if (skill.type === 'aoe' || p.key === 'mage') {
@@ -486,6 +493,50 @@ let gameState = {
       }
     }
 
+    // ESTADOS ALTERADOS SOBRE EL JUGADOR
+    function renderPlayerStatus(container) {
+      (gameState.player.status || []).forEach(st => {
+        const i = FX_INFO[st.type];
+        container.innerHTML += `<span class="px-2 py-0.5 border rounded text-[10px] flex items-center gap-1 ${i.cls}">${i.icon} ${i.label} (${st.turns}t)</span>`;
+      });
+    }
+
+    function tryInflictStatus(enemy) {
+      const fx = enemy.fx, p = gameState.player;
+      if (!fx || p.hp <= 0 || Math.random() >= fx.chance) return;
+      if (fx.type === 'stun' && p.stunImmune) return;
+      const turns = fx.type === 'stun' ? 1 : 2;
+      p.status = p.status || [];
+      const ex = p.status.find(s => s.type === fx.type);
+      if (ex) ex.turns = Math.max(ex.turns, turns); else p.status.push({ type: fx.type, turns });
+      const i = FX_INFO[fx.type];
+      logMessage(`${i.icon} ¡<strong>${enemy.name}</strong> te ha infligido <strong>${i.label}</strong>!`, 'enemy');
+    }
+
+    // Aplica el daño por turno y reduce duraciones. Devuelve true si el jugador está aturdido.
+    function tickPlayerStatus() {
+      const p = gameState.player;
+      let stunned = false;
+      p.status = p.status || [];
+      p.status.forEach(st => {
+        const pct = { poison: 0.06, bleed: 0.05, burn: 0.07 }[st.type];
+        if (pct) {
+          const dmg = Math.max(4, Math.round(p.maxHp * pct));
+          p.hp = Math.max(0, p.hp - dmg);
+          const i = FX_INFO[st.type];
+          logMessage(`${i.icon} Sufres <strong class="text-rose-400">${dmg} de daño por ${i.label}</strong>.`, 'enemy');
+        }
+        if (st.type === 'stun') {
+          stunned = true;
+          logMessage('⚡ ¡Estás aturdido y pierdes tu turno!', 'enemy');
+        }
+        st.turns--;
+      });
+      p.status = p.status.filter(s => s.turns > 0);
+      p.stunImmune = stunned; // evita aturdimientos consecutivos
+      return stunned;
+    }
+
     function applyStatus(enemy, type, turns) {
       if (!enemy.statusEffects) enemy.statusEffects = [];
       const existing = enemy.statusEffects.find(s => s.type === type);
@@ -565,6 +616,7 @@ let gameState = {
             setTimeout(() => card.classList.remove('animate-hit'), 400);
 
             logMessage(`💥 <strong>${enemy.name}</strong> te ataca por <strong class="text-rose-400">${rawDmg} de daño</strong>.`, 'enemy');
+            tryInflictStatus(enemy);
           }
 
           renderPlayerInfo();
@@ -584,6 +636,9 @@ let gameState = {
         });
 
         if (gameState.player.hp > 0) {
+          const stunned = tickPlayerStatus();
+          if (gameState.player.hp <= 0) { renderPlayerInfo(); handleGameOver(false); return; }
+          if (stunned) { renderPlayerInfo(); setTimeout(handleEnemyTurn, 900); return; }
           if (gameState.player.buffs.turns > 0) {
             gameState.player.buffs.turns--;
             if (gameState.player.buffs.turns === 0) {
@@ -648,6 +703,8 @@ let gameState = {
 
     function advanceStage() {
       gameState.stage++;
+      gameState.player.status = [];
+      gameState.player.stunImmune = false;
       gameState.isPlayerTurn = true;
       document.getElementById('turn-indicator').innerText = 'Tu Turno';
       document.getElementById('turn-indicator').className = 'text-xs font-semibold px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full';

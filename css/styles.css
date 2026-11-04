@@ -149,3 +149,11 @@ body.dark-mode .skill-btn-card .skill-title {
   100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
 }
 .animate-level-up { animation: level-up-glow 1.5s ease-out; }
+
+/* ADAPTACIÓN A CELULAR Y TABLET */
+* { -webkit-tap-highlight-color: transparent; }
+button, .class-card, .skill-btn-card { touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; }
+@media (max-width: 480px) {
+  .combat-log-box { font-size: 11px; }
+}
