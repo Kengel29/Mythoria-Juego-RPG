@@ -16,12 +16,3 @@ El orden de los scripts en `index.html` importa: `data.js`, `art.js` y por últi
 ## Cómo ejecutarlo
 
 Deja todos los archivos juntos en una misma carpeta y abre `index.html`, o ejecuta `npm start`.
-
-## Publicar en GitHub Pages
-
-1. Sube **el contenido** de esta carpeta a la raíz del repositorio (`index.html` debe quedar en la raíz, no dentro de otra carpeta).
-2. En el repositorio: **Settings → Pages → Build and deployment → Deploy from a branch**.
-3. Elige la rama `main` y la carpeta `/ (root)`, y guarda.
-4. Espera 1-2 minutos y abre `https://TU-USUARIO.github.io/NOMBRE-DEL-REPO/`.
-
-Nota: si subes el `.zip` tal cual, GitHub no lo descomprime; primero extráelo y sube los archivos.
