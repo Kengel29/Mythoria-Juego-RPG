@@ -2,22 +2,17 @@
 
 Juego RPG por turnos hecho con HTML, CSS y JavaScript.
 
-## Estructura
+## Archivos (todos en la misma carpeta)
 
-```
-mythoria/
-├── index.html        # Estructura de las pantallas
-├── css/
-│   └── styles.css    # Estilos y modo claro/oscuro
-├── js/
-│   ├── data.js       # Clases, regiones, enemigos y jefes
-│   ├── art.js        # Ilustraciones SVG de clases y monstruos
-│   └── game.js       # Lógica del juego (combate, niveles, menús)
-└── package.json
-```
+- `index.html`: estructura de las pantallas
+- `styles.css`: estilos y modo claro/oscuro
+- `data.js`: clases, regiones, enemigos, jefes y efectos
+- `art.js`: ilustraciones SVG de clases, monstruos y habilidades
+- `game.js`: lógica del juego (combate, niveles, menús)
+- `package.json`
+
+El orden de los scripts en `index.html` importa: `data.js`, `art.js` y por último `game.js`.
 
 ## Cómo ejecutarlo
 
-Abre `index.html` en el navegador, o ejecuta `npm start`.
-
-El orden de los scripts en `index.html` importa: `data.js`, luego `art.js` y por último `game.js`.
+Deja todos los archivos juntos en una misma carpeta y abre `index.html`, o ejecuta `npm start`.

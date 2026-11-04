@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Mythoria - Juego RPG por Turnos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode min-h-[100dvh] flex items-center justify-center p-2 sm:p-4 transition-colors duration-300">
+
+  <div class="main-card w-full max-w-4xl bg-slate-900/90 border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md flex flex-col min-h-[680px]">
+    
+    <!-- HEADER -->
+    <header class="sub-header bg-slate-950/80 border-b border-slate-800 p-3 sm:p-4 flex flex-wrap justify-between items-center gap-2 px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-dragon text-amber-500 text-2xl"></i>
+        <h1 class="font-cinzel text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 bg-clip-text text-transparent">
+          MYTHORIA
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- BOTÓN CONMUTADOR DE TEMA LUZ / OSCURIDAD -->
+        <button onclick="toggleTheme()" id="theme-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sun text-amber-400" id="theme-icon"></i> <span id="theme-text">Modo Claro</span>
+        </button>
+
+        <!-- BOTÓN SALIR (SIEMPRE VISIBLE) -->
+        <button onclick="exitGameScreen()" id="exit-btn" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-500 border border-rose-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+          <i class="fa-solid fa-power-off"></i> Salir
+        </button>
+
+        <div id="top-controls" class="hidden flex items-center gap-3">
+          <span id="region-badge" class="px-3 py-1 bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 rounded-full text-xs font-bold">
+            🛣️ Camino Real
+          </span>
+          <span id="stage-badge" class="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full text-xs font-semibold">
+            Oleada 1
+          </span>
+          <button onclick="resetGameToSelection()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-500 hover:text-rose-700 border border-rose-500/40 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer z-10">
+            <i class="fa-solid fa-house"></i> Volver al Menú
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- PANTALLA 1: SELECCIÓN DE PERSONAJE -->
+    <section id="selection-screen" class="p-6 sm:p-10 flex-1 flex flex-col justify-center items-center">
+      <div class="text-center mb-6">
+        <h2 class="font-cinzel text-2xl sm:text-3xl font-bold mb-2">Elige a tu Héroe</h2>
+        <p class="text-slate-400 text-sm max-w-md">Selecciona una clase para comenzar tu aventura en los reinos de Mythoria.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl mb-6">
+        <!-- GUERRERO -->
+        <div id="card-warrior" onclick="highlightClass('warrior')" class="class-card group relative bg-slate-800/50 hover:bg-slate-800 border-2 border-slate-700 hover:border-red-500/80 rounded-xl p-5 cursor-pointer transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-20 h-20 rounded-full bg-red-950/60 border-2 border-red-500/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span data-art="warrior" class="block w-[72px] h-[72px] rounded-full overflow-hidden"></span>
+          </div>
+          <h3 class="font-cinzel text-xl font-bold text-red-400 mb-1">Guerrero</h3>
+          <p class="text-xs text-slate-400 mb-3">Tanque cuerpo a cuerpo. Aplica Aturdimiento (Stun), Sangrado y Shock.</p>
+          <div class="sub-card w-full space-y-1 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+            <div><strong>HP:</strong> 120 | <strong>Mana:</strong> 40</div>
+            <div><strong>Atq:</strong> 18 | <strong>Def:</strong> 12</div>
+          </div>
+        </div>
+
+        <!-- ARQUERO (CON SVG DEL ARCO VISIBLE) -->
+        <div id="card-archer" onclick="highlightClass('archer')" class="class-card group relative bg-slate-800/50 hover:bg-slate-800 border-2 border-slate-700 hover:border-emerald-500/80 rounded-xl p-5 cursor-pointer transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-20 h-20 rounded-full bg-emerald-950/60 border-2 border-emerald-500/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span data-art="archer" class="block w-[72px] h-[72px] rounded-full overflow-hidden"></span>
+          </div>
+          <h3 class="font-cinzel text-xl font-bold text-emerald-400 mb-1">Arquero</h3>
+          <p class="text-xs text-slate-400 mb-3">Cazador veloz. Causa Impactos Críticos, Sangrado e Inmovilización.</p>
+          <div class="sub-card w-full space-y-1 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+            <div><strong>HP:</strong> 95 | <strong>Mana:</strong> 60</div>
+            <div><strong>Atq:</strong> 22 | <strong>Def:</strong> 7</div>
+          </div>
+        </div>
+
+        <!-- MAGO -->
+        <div id="card-mage" onclick="highlightClass('mage')" class="class-card group relative bg-slate-800/50 hover:bg-slate-800 border-2 border-slate-700 hover:border-cyan-500/80 rounded-xl p-5 cursor-pointer transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-20 h-20 rounded-full bg-cyan-950/60 border-2 border-cyan-500/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span data-art="mage" class="block w-[72px] h-[72px] rounded-full overflow-hidden"></span>
+          </div>
+          <h3 class="font-cinzel text-xl font-bold text-cyan-400 mb-1">Mago</h3>
+          <p class="text-xs text-slate-400 mb-3">Daño elemental en área. Desata Quemadura continua y Parálisis.</p>
+          <div class="sub-card w-full space-y-1 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+            <div><strong>HP:</strong> 80 | <strong>Mana:</strong> 110</div>
+            <div><strong>Atq:</strong> 25 | <strong>Def:</strong> 5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE CONFIRMACIÓN DE MENÚ -->
+      <div id="selection-actions" class="hidden flex flex-wrap justify-center gap-4 w-full max-w-md animate-fade-in">
+        <button onclick="startAdventure()" class="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-play"></i> Iniciar la Aventura
+        </button>
+        <button onclick="exitGameScreen()" class="py-3 px-5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl border border-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-power-off"></i> Salir del Juego
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA DE SALIDA -->
+    <section id="exit-screen" class="hidden p-10 flex-1 flex flex-col justify-center items-center text-center">
+      <i class="fa-solid fa-dragon text-6xl text-amber-500 mb-4 animate-bounce"></i>
+      <h2 class="font-cinzel text-3xl font-black text-slate-100 mb-2">¡Gracias por visitar Mythoria!</h2>
+      <p class="text-slate-400 text-sm max-w-sm mb-6">El reino aguarda pacientemente el regreso de su héroe.</p>
+      <button onclick="resetToMainMenu()" class="py-3 px-6 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl transition">
+        Volver al Menú Principal
+      </button>
+    </section>
+
+    <!-- PANTALLA 2: COMBATE -->
+    <section id="game-screen" class="hidden flex-1 flex flex-col p-4 sm:p-6 gap-4">
+      
+      <!-- ARENA DE BATALLA -->
+      <div class="battle-arena grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+        
+        <!-- JUGADOR -->
+        <div id="player-card" class="player-card-box bg-slate-900/80 p-4 rounded-lg border border-slate-700/80 relative">
+          <div class="flex items-center gap-3 mb-3">
+            <div id="player-avatar" class="w-12 h-12 rounded-full flex items-center justify-center text-2xl border"></div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <h3 id="player-name" class="font-cinzel font-black text-lg text-amber-400">Héroe</h3>
+                <span id="player-level" class="text-xs font-bold px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded">Nvl 1</span>
+              </div>
+              <p id="player-class-title" class="text-stat-sub text-xs font-semibold text-slate-300">Clase</p>
+            </div>
+          </div>
+
+          <!-- BARRAS JUGADOR -->
+          <div class="space-y-2 text-xs">
+            <div>
+              <div class="flex justify-between mb-1 text-stat-label text-slate-300">
+                <span>Vida (HP)</span>
+                <span id="player-hp-text">100/100</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                <div id="player-hp-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1 text-stat-label text-slate-300">
+                <span>Maná (MP)</span>
+                <span id="player-mp-text">50/50</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                <div id="player-mp-bar" class="bg-cyan-500 h-full transition-all duration-300" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-0.5 text-stat-sub text-slate-400 text-[10px]">
+                <span>Experiencia (XP)</span>
+                <span id="player-xp-text">0/100</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden border border-slate-700">
+                <div id="player-xp-bar" class="bg-amber-400 h-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INVENTARIO RÁPIDO -->
+          <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+            <div class="flex gap-2">
+              <button onclick="usePotion('hp')" class="px-2.5 py-1 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 rounded flex items-center gap-1 transition">
+                <i class="fa-solid fa-flask text-emerald-400"></i> Poción HP (<span id="potion-hp-count">2</span>)
+              </button>
+              <button onclick="usePotion('mp')" class="px-2.5 py-1 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 rounded flex items-center gap-1 transition">
+                <i class="fa-solid fa-vial text-cyan-400"></i> Poción MP (<span id="potion-mp-count">2</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- BUFFS & ESCUDOS -->
+          <div id="player-buffs" class="mt-2 flex flex-wrap gap-1 min-h-[22px]"></div>
+        </div>
+
+        <!-- ENEMIGOS CONTAINER (RESTAURADO) -->
+        <div id="enemies-container" class="enemy-card-box bg-slate-900/80 p-4 rounded-lg border border-slate-700/80 flex flex-col justify-center gap-2">
+        </div>
+
+      </div>
+
+      <!-- CONTENEDOR DE CONTROLES E HISTORIAL FIJOS -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1">
+        
+        <!-- PANEL DE HABILIDADES FIJO (7 cols) -->
+        <div class="combat-panel md:col-span-7 bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col h-[250px]">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="panel-title-text font-cinzel font-bold text-sm text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-swords text-amber-400"></i> Acciones de Combate
+            </h4>
+            <span id="turn-indicator" class="text-xs font-semibold px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full">
+              Tu Turno
+            </span>
+          </div>
+
+          <!-- BOTONES DE ATAQUE -->
+          <div id="skills-grid" class="grid grid-cols-2 gap-2 flex-1">
+          </div>
+        </div>
+
+        <!-- PANEL DE HISTORIAL FIJO (5 cols) -->
+        <div class="combat-panel md:col-span-5 bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col h-[250px]">
+          <h4 class="panel-title-text font-cinzel font-bold text-sm text-slate-300 mb-2 flex items-center gap-2 border-b border-slate-800 pb-1.5">
+            <i class="fa-solid fa-scroll text-slate-400"></i> Registro de Combate
+          </h4>
+          <div id="combat-log" class="combat-log-box custom-scroll flex-1 overflow-y-auto space-y-1.5 p-2 rounded-lg text-xs font-mono bg-slate-950 border border-slate-800">
+            <p class="text-slate-400 italic">¡La batalla en Mythoria ha comenzado!</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- MODAL DE MEJORA DE HABILIDADES Y ESTADÍSTICAS (RESTAURADO) -->
+  <div id="upgrade-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="modal-box bg-slate-900 border-2 border-amber-500/80 rounded-2xl p-6 max-w-lg w-full text-center shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scroll">
+      <div class="w-16 h-16 bg-amber-500/20 rounded-full border border-amber-400 flex items-center justify-center mx-auto mb-3">
+        <i class="fa-solid fa-angles-up text-amber-400 text-3xl"></i>
+      </div>
+      <h3 class="font-cinzel text-2xl font-black text-amber-400 mb-1">¡NIVEL ALCANZADO!</h3>
+      
+      <!-- DESGLOSE DE MEJORA DE ESTADÍSTICAS -->
+      <div id="stats-increase-card" class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 my-3 text-xs text-slate-300">
+        <p class="font-bold text-amber-300 mb-1.5 border-b border-slate-800 pb-1">📈 Aumento de Estadísticas Base:</p>
+        <div class="grid grid-cols-2 gap-2 text-left">
+          <div class="text-emerald-400 font-semibold"><i class="fa-solid fa-heart mr-1"></i> HP Máx: +20</div>
+          <div class="text-cyan-400 font-semibold"><i class="fa-solid fa-droplet mr-1"></i> MP Máx: +15</div>
+          <div class="text-amber-400 font-semibold"><i class="fa-solid fa-hand-fist mr-1"></i> Ataque: +4</div>
+          <div class="text-indigo-400 font-semibold"><i class="fa-solid fa-shield mr-1"></i> Defensa: +2</div>
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-3">Elige 1 habilidad para <span class="text-amber-300 font-bold">evolucionar</span>:</p>
+
+      <div id="upgrade-options" class="grid grid-cols-1 gap-2.5 text-left mb-2">
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GAME OVER / VICTORIA (RESTAURADO) -->
+  <div id="game-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div id="modal-card" class="modal-box bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl">
+      <div id="modal-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"></div>
+      <h3 id="modal-title" class="font-cinzel text-2xl font-bold mb-2"></h3>
+      <p id="modal-message" class="text-slate-400 text-sm mb-6"></p>
+      <div class="space-y-2">
+        <button onclick="restartSameClass()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i> Volver a Jugar
+        </button>
+        <button onclick="resetGameToSelection()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-700 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-gear"></i> Seleccionar Otra Clase
+        </button>
+        <button onclick="exitGameScreen()" class="w-full py-2.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold rounded-lg border border-rose-800 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-power-off"></i> Salir del Juego
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="art.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
