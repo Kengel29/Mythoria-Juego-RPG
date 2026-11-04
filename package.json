@@ -1,0 +1,15 @@
+{
+  "name": "mythoria",
+  "version": "1.0.0",
+  "description": "Mythoria - Juego RPG por turnos",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "rpg",
+    "juego",
+    "por-turnos"
+  ],
+  "license": "MIT"
+}
